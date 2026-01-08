@@ -1,9 +1,8 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<title>Pensum Química Farmacéutica – UdeA</title>
-
+<meta charset="UTF-8" />
+<title>Malla Curricular QF – Universidad de Antioquia</title>
 <style>
 :root{
   --pink-1:#fde7ef;
@@ -11,33 +10,29 @@
   --pink-3:#f48fb1;
   --pink-4:#ec407a;
   --pink-5:#ad1457;
-  --blocked:#ededed;
+  --blocked:#f2f2f2;
   --text:#4a2b36;
 }
 *{box-sizing:border-box}
-
 body{
   margin:0;
   font-family:'Segoe UI', system-ui, sans-serif;
   background:linear-gradient(120deg,var(--pink-1),#fff);
   color:var(--text);
 }
-
 header{
   padding:20px;
   text-align:center;
 }
 header h1{margin:0;color:var(--pink-5)}
-
 #progress{
-  max-width:1300px;
-  margin:0 auto 15px;
+  max-width:1200px;
+  margin:0 auto 20px;
   background:#fff;
   padding:12px 16px;
   border-radius:12px;
   box-shadow:0 4px 10px rgba(0,0,0,.08);
 }
-
 #grid{
   display:grid;
   grid-template-columns:repeat(10,minmax(260px,1fr));
@@ -45,21 +40,17 @@ header h1{margin:0;color:var(--pink-5)}
   padding:20px;
   overflow-x:auto;
 }
-
-.semester{
+.year{
   background:#fff;
   border-radius:16px;
   padding:12px;
   box-shadow:0 6px 14px rgba(0,0,0,.08);
 }
-
-.semester h2{
+.year h2{
   text-align:center;
   color:var(--pink-4);
-  margin:6px 0 12px;
-  font-size:15px;
+  margin:8px 0 12px;
 }
-
 .course{
   background:var(--pink-2);
   border-radius:12px;
@@ -68,35 +59,28 @@ header h1{margin:0;color:var(--pink-5)}
   cursor:pointer;
   position:relative;
   transition:.2s;
-  font-size:13px;
 }
 .course:hover{transform:scale(1.02)}
-
 .course.approved{
   background:var(--pink-4);
   color:white;
-  text-decoration:line-through;
 }
-
 .course.blocked{
   background:var(--blocked);
   color:#999;
   cursor:not-allowed;
 }
-
 .course.coreq{
   border:2px dashed var(--pink-4);
 }
-.course.coreq::after{
-  content:" 🌸";
-  position:absolute;
-  top:6px;
-  right:8px;
+.course .code{
+  font-size:12px;
+  opacity:.8;
 }
-
-.course .code{font-size:12px;opacity:.75}
-.course .credits{font-size:12px;margin-top:4px}
-
+.course .credits{
+  font-size:12px;
+  margin-top:4px;
+}
 .tooltip{
   position:absolute;
   left:50%;
@@ -107,169 +91,183 @@ header h1{margin:0;color:var(--pink-5)}
   padding:6px 8px;
   border-radius:6px;
   font-size:12px;
+  white-space:nowrap;
   display:none;
+  z-index:10;
 }
 .course.blocked:hover .tooltip{display:block}
+.legend{
+  max-width:1200px;
+  margin:10px auto;
+  display:flex;
+  gap:16px;
+  font-size:14px;
+}
+.legend span{display:flex;align-items:center;gap:6px}
+.dot{width:14px;height:14px;border-radius:4px}
 </style>
 </head>
-
 <body>
-
 <header>
-  <h1>Pensum Química Farmacéutica – Versión 06</h1>
+  <h1>Malla Curricular – Química Farmacéutica</h1>
   <p>Universidad de Antioquia · Progreso guardado automáticamente</p>
 </header>
-
-<div id="progress">
-  Créditos aprobados: <strong><span id="credits">0</span></strong>
+<div id="progress">Créditos aprobados: <strong><span id="credits">0</span></strong></div>
+<div class="legend">
+  <span><div class="dot" style="background:var(--pink-2)"></div>Materia normal</span>
+  <span><div class="dot" style="background:var(--pink-4)"></div>Aprobada</span>
+  <span><div class="dot" style="border:2px dashed var(--pink-4)"></div>Correquisito</span>
+  <span><div class="dot" style="background:#ccc"></div>Bloqueada</span>
 </div>
-
 <div id="grid"></div>
-
 <script>
 const data = [
-{semester:1,courses:[
-{code:'4007-600',name:'Matemáticas Básica',cr:4},
-{code:'4008-600',name:'Química General Básica',cr:4},
-{code:'4008-601',name:'Laboratorio de Química General',cr:1,coreq:['4008-600']},
-{code:'4012-400',name:'Seguridad y Salud en el Trabajo',cr:1},
-{code:'4010-500',name:'Técnicas de la Comunicación',cr:2},
-{code:'4012-402',name:'Desarrollo Humano',cr:1},
-{code:'4012-404',name:'Introducción a la Farmacia',cr:2},
-{code:'4012-459',name:'Inglés I',cr:2}
-]},
-{semester:2,courses:[
-{code:'4008-602',name:'Química Orgánica Básica',cr:4,pr:['4008-600','4008-601']},
-{code:'4008-603',name:'Lab. Química Orgánica',cr:1,coreq:['4008-602']},
-{code:'4007-602',name:'Bioestadística Básica',cr:2,pr:['4007-600']},
-{code:'4008-604',name:'Química Analítica Básica',cr:4,pr:['4008-600','4008-601']},
-{code:'4008-605',name:'Lab. Química Analítica',cr:1,coreq:['4008-604']},
-{code:'4012-401',name:'Seminario de Matemáticas Básica',cr:1,pr:['4007-600']},
-{code:'4012-406',name:'Salud Pública',cr:1,pr:['4012-400']},
-{code:'4012-460',name:'Inglés II',cr:2,pr:['4012-459']}
-]},
-{semester:3,courses:[
-{code:'4009-338',name:'Formación Ciudadana y Constitucional',cr:1},
-{code:'4007-604',name:'Física Básica',cr:3,pr:['4012-401']},
-{code:'4012-412',name:'Bioquímica Biomédica',cr:3,pr:['4008-604','4008-605']},
-{code:'4012-413',name:'Lab. Bioquímica Biomédica',cr:1,coreq:['4012-412']},
-{code:'4012-414',name:'Bioética',cr:1,pr:['4012-404']},
-{code:'4012-405',name:'Metodología de la Investigación Cuantitativa',cr:2,pr:['4012-403']},
-{code:'4012-461',name:'Inglés III',cr:2,pr:['4012-460']}
-]},
-{semester:4,courses:[
-{code:'4012-420',name:'Biotecnología Biomédica',cr:2},
-{code:'4012-421',name:'Lab. Biotecnología Biomédica',cr:2,coreq:['4012-420']},
-{code:'4012-416',name:'Fisioanatomía Biomédica',cr:3,pr:['4012-412']},
-{code:'4012-417',name:'Lab. Fisioanatomía',cr:1,coreq:['4012-416']},
-{code:'4008-606',name:'Fisicoquímica Básica',cr:3,pr:['4007-604','4008-602']},
-{code:'4008-607',name:'Lab. Fisicoquímica',cr:1,coreq:['4008-606']},
-{code:'4010-602',name:'Microbiología Biomédica',cr:2},
-{code:'4010-603',name:'Lab. Microbiología',cr:1,coreq:['4010-602']},
-{code:'4012-462',name:'Inglés IV',cr:2,pr:['4012-461']}
-]},
-{semester:5,courses:[
-{code:'4008-608',name:'Análisis Instrumental Básica',cr:3,pr:['4008-606','4008-607']},
-{code:'4008-609',name:'Lab. Análisis Instrumental',cr:1,coreq:['4008-608']},
-{code:'4012-418',name:'Farmacognosia Farmacéutica',cr:3,pr:['4008-602','4008-603']},
-{code:'4012-419',name:'Lab. Farmacognosia',cr:1,coreq:['4012-418']},
-{code:'4012-440',name:'Biofarmacia y Farmacocinética',cr:2},
-{code:'4012-422',name:'Operaciones Unitarias Farmacéuticas',cr:2},
-{code:'4012-463',name:'Inglés V',cr:2,pr:['4012-462']}
-]},
-{semester:6,courses:[
-{code:'4012-442',name:'Fitoquímica Farmacéutica',cr:2,pr:['4012-418']},
-{code:'4012-443',name:'Lab. Fitoquímica',cr:2,coreq:['4012-442']},
-{code:'4012-426',name:'Tecnología Farmacéutica I',cr:3,pr:['4012-422']},
-{code:'4012-427',name:'Lab. Tecnología Farmacéutica I',cr:2,coreq:['4012-426']},
-{code:'4012-430',name:'Análisis y Control de Medicamentos I',cr:3,pr:['4008-608','4008-609']},
-{code:'4012-431',name:'Lab. Análisis y Control I',cr:2,coreq:['4012-430']},
-{code:'4012-411',name:'Prácticas Académicas Sector Productivo',cr:2}
-]},
-{semester:7,courses:[
-{code:'4012-432',name:'Tecnología Farmacéutica II',cr:3,pr:['4012-426','4012-427']},
-{code:'4012-433',name:'Lab. Tecnología Farmacéutica II',cr:2,coreq:['4012-432']},
-{code:'4012-448',name:'Administración Farmacéutica',cr:2},
-{code:'4012-436',name:'Análisis y Control de Medicamentos II',cr:2,pr:['4012-430','4012-431']},
-{code:'4012-437',name:'Lab. Análisis y Control II',cr:1,coreq:['4012-436']},
-{code:'4012-444',name:'Cosméticos',cr:2},
-{code:'4012-445',name:'Lab. Cosméticos',cr:1,coreq:['4012-444']}
-]},
-{semester:8,courses:[
-{code:'4012-434',name:'Toxicología Biomédica',cr:2},
-{code:'4012-435',name:'Lab. Toxicología',cr:1,coreq:['4012-434']},
-{code:'4012-408',name:'Farmacología Biomédica',cr:4},
-{code:'4012-424',name:'Nutrición y Bromatología',cr:2},
-{code:'4012-425',name:'Lab. Nutrición y Bromatología',cr:1,coreq:['4012-424']},
-{code:'4012-446',name:'Farmacia Hospitalaria y Ambulatoria',cr:2},
-{code:'4012-441',name:'Prácticas Académicas Desarrollo Proyecto I',cr:2}
-]},
-{semester:9,courses:[
-{code:'4012-438',name:'Electiva Administrativa',cr:1},
-{code:'4012-450',name:'Farmacia Clínica',cr:4},
-{code:'4012-451',name:'Prácticas Farmacia Clínica',cr:3,coreq:['4012-450']},
-{code:'4012-452',name:'Química Farmacéutica',cr:2},
-{code:'4012-453',name:'Lab. Química Farmacéutica',cr:1,coreq:['4012-452']},
-{code:'4012-454',name:'Farmacia Magistral',cr:2},
-{code:'4012-455',name:'Lab. Farmacia Magistral',cr:1,coreq:['4012-454']},
-{code:'4012-456',name:'Aseguramiento de la Calidad',cr:1}
-]},
-{semester:10,courses:[
-{code:'4012-459F',name:'Práctica Académica Final',cr:16}
-]}
+  {level:1,courses:[
+    {code:'4007-600',name:'Matemáticas Básica',cr:4},
+    {code:'4008-600',name:'Química General Básica',cr:4},
+    {code:'4008-601',name:'Laboratorio de Química General',cr:1,coreq:['4008-600']},
+    {code:'4012-400',name:'Seguridad y Salud en el Trabajo',cr:1},
+    {code:'4010-500',name:'Técnicas de la Comunicación',cr:2},
+    {code:'4012-402',name:'Desarrollo Humano',cr:1},
+    {code:'4012-404',name:'Introducción a la Farmacia',cr:2},
+    {code:'4012-459',name:'Inglés I',cr:2}
+  ]},
+  {level:2,courses:[
+    {code:'4008-602',name:'Química Orgánica Básica',cr:4,pr:['4008-600','4008-601']},
+    {code:'4008-603',name:'Laboratorio de Química Orgánica',cr:1,coreq:['4008-602']},
+    {code:'4007-602',name:'Bioestadística Básica',cr:2,pr:['4007-600']},
+    {code:'4008-604',name:'Química Analítica Básica',cr:4,pr:['4008-600','4008-601']},
+    {code:'4008-605',name:'Laboratorio de Química Analítica',cr:1,coreq:['4008-604']},
+    {code:'4012-401',name:'Seminario de Matemáticas Básica',cr:1,pr:['4007-600']},
+    {code:'4012-406',name:'Salud Pública',cr:1,pr:['4012-400']},
+    {code:'4012-460',name:'Inglés II',cr:2,pr:['4012-459']}
+  ]},
+  {level:3,courses:[
+    {code:'4009-338',name:'Formación Ciudadana y Constitucional',cr:1,prCredits:30},
+    {code:'4007-604',name:'Física Básica',cr:3,pr:['4012-401']},
+    {code:'4010-600',name:'Biología Celular y Molecular',cr:3,coreq:['4012-412','4012-413']},
+    {code:'4012-412',name:'Bioquímica Biomédica',cr:3,pr:['4008-604','4008-605']},
+    {code:'4012-413',name:'Laboratorio de Bioquímica Biomédica',cr:1,coreq:['4012-412']},
+    {code:'4012-414',name:'Bioética',cr:1,pr:['4012-404']},
+    {code:'4012-407',name:'Prácticas Académicas Comunidad',cr:1,pr:['4012-406','4012-403']},
+    {code:'4012-405',name:'Metodología de la Investigación Cuantitativa',cr:2,pr:['4012-403']},
+    {code:'4012-461',name:'Inglés III',cr:2,pr:['4012-460']}
+  ]},
+  {level:4,courses:[
+    {code:'4012-420',name:'Biotecnología Biomédica',cr:2},
+    {code:'4012-421',name:'Lab. Biotecnología Biomédica',cr:2,coreq:['4012-420']},
+    {code:'4012-416',name:'Fisioanatomía Biomédica',cr:3,pr:['4012-412']},
+    {code:'4012-417',name:'Lab. Fisioanatomía',cr:1,coreq:['4012-416']},
+    {code:'4008-606',name:'Fisicoquímica Básica',cr:3,pr:['4007-604','4008-602']},
+    {code:'4008-607',name:'Lab. Fisicoquímica',cr:1,coreq:['4008-606']},
+    {code:'4010-602',name:'Microbiología Biomédica',cr:2,pr:['4010-600']},
+    {code:'4010-603',name:'Lab. Microbiología',cr:1,coreq:['4010-602']},
+    {code:'4012-462',name:'Inglés IV',cr:2,pr:['4012-461']}
+  ]},
+  {level:5,courses:[
+    {code:'4008-608',name:'Análisis Instrumental Básica',cr:3,pr:['4008-606','4008-607']},
+    {code:'4008-609',name:'Lab. Análisis Instrumental',cr:1,coreq:['4008-608']},
+    {code:'4012-418',name:'Farmacognosia Farmacéutica',cr:3,pr:['4008-602','4008-603']},
+    {code:'4012-419',name:'Lab. Farmacognosia',cr:1,coreq:['4012-418']},
+    {code:'4012-440',name:'Biofarmacia y Farmacocinética',cr:2,pr:['4012-416','4008-606']},
+    {code:'4012-422',name:'Operaciones Unitarias Farmacéuticas',cr:2,pr:['4008-606']},
+    {code:'4012-409',name:'Prácticas Académicas Servicios Farmacéuticos',cr:1,pr:['4012-407'],coreq:['4012-410']},
+    {code:'4012-410',name:'Legislación Farmacéutica',cr:1,pr:['4012-420']},
+    {code:'4012-429',name:'Diseño de Experimentos',cr:1,pr:['4012-405']},
+    {code:'4012-463',name:'Inglés V',cr:2,pr:['4012-462']}
+  ]},
+  {level:6,courses:[
+    {code:'4012-442',name:'Fitoquímica Farmacéutica',cr:2,pr:['4012-418']},
+    {code:'4012-443',name:'Lab. Fitoquímica',cr:2,coreq:['4012-442']},
+    {code:'4012-426',name:'Tecnología Farmacéutica I',cr:3,pr:['4012-422']},
+    {code:'4012-427',name:'Lab. Tecnología Farmacéutica I',cr:2,coreq:['4012-426']},
+    {code:'4012-428',name:'Electiva Socio-Humanística',cr:1,pr:['4012-410']},
+    {code:'4012-430',name:'Análisis y Control de Medicamentos I',cr:3,pr:['4008-608','4008-609'],coreq:['4012-426','4012-427']},
+    {code:'4012-431',name:'Lab. Análisis y Control I',cr:2,coreq:['4012-430']},
+    {code:'4012-411',name:'Prácticas Académicas Sector Productivo',cr:2,pr:['4012-409']}
+  ]},
+  {level:7,courses:[
+    {code:'4012-432',name:'Tecnología Farmacéutica II',cr:3,pr:['4012-426','4012-427']},
+    {code:'4012-433',name:'Lab. Tecnología Farmacéutica II',cr:2,coreq:['4012-432']},
+    {code:'4012-448',name:'Administración Farmacéutica',cr:2,pr:['4012-410']},
+    {code:'4012-436',name:'Análisis y Control de Medicamentos II',cr:2,pr:['4012-430','4012-431'],coreq:['4012-432','4012-433']},
+    {code:'4012-437',name:'Lab. Análisis y Control II',cr:1,coreq:['4012-436']},
+    {code:'4012-439',name:'Prácticas Académicas Elaboración Proyecto',cr:2,pr:['4012-411']},
+    {code:'4012-444',name:'Cosméticos',cr:2,coreq:['4012-432']},
+    {code:'4012-445',name:'Lab. Cosméticos',cr:1,coreq:['4012-444','4012-433']}
+  ]},
+  {level:8,courses:[
+    {code:'4012-434',name:'Toxicología Biomédica',cr:2,pr:['4012-436','4012-437']},
+    {code:'4012-435',name:'Lab. Toxicología',cr:1,coreq:['4012-434']},
+    {code:'4012-408',name:'Farmacología Biomédica',cr:4,pr:['4012-440','4012-442']},
+    {code:'4012-424',name:'Nutrición y Bromatología',cr:2,pr:['4012-432','4012-440']},
+    {code:'4012-425',name:'Lab. Nutrición y Bromatología',cr:1,coreq:['4012-424']},
+    {code:'4012-446',name:'Farmacia Hospitalaria y Ambulatoria',cr:2,pr:['4012-409','4012-436']},
+    {code:'4012-441',name:'Prácticas Académicas Desarrollo Proyecto I',cr:2,pr:['4012-439']}
+  ]},
+  {level:9,courses:[
+    {code:'4012-438',name:'Electiva Administrativa',cr:1,pr:['4012-432','4012-448']},
+    {code:'4012-450',name:'Farmacia Clínica',cr:4,pr:['4012-408','4012-446']},
+    {code:'4012-451',name:'Prácticas Farmacia Clínica',cr:3,coreq:['4012-450']},
+    {code:'4012-452',name:'Química Farmacéutica',cr:2,pr:['4012-436','4012-408']},
+    {code:'4012-453',name:'Lab. Química Farmacéutica',cr:1,coreq:['4012-452']},
+    {code:'4012-454',name:'Farmacia Magistral',cr:2,pr:['4012-432','4012-433']},
+    {code:'4012-455',name:'Lab. Farmacia Magistral',cr:1,coreq:['4012-454']},
+    {code:'4012-457',name:'Práctica Académica Desarrollo Proyecto II',cr:2,pr:['4012-441']},
+    {code:'4012-456',name:'Aseguramiento de la Calidad',cr:1,pr:['4012-432']}
+  ]},
+  {level:10,courses:[
+    {code:'4012-459F',name:'Práctica Académica Final',cr:16,prCredits:149}
+  ]}
 ];
 
 let state = JSON.parse(localStorage.getItem('qf-progress')||'{}');
 
-function approved(code){ return state[code] === true; }
-function prereqOk(c){ return !(c.pr && !c.pr.every(approved)); }
-
+function isApproved(code){return state[code]===true}
+function prereqOk(course){
+  if(!course.pr) return true;
+  return course.pr.every(isApproved);
+}
 function render(){
   const grid=document.getElementById('grid');
   grid.innerHTML='';
-  let credits=0;
-
-  data.forEach(s=>{
+  let totalCredits=0;
+  data.forEach(level=>{
     const col=document.createElement('div');
-    col.className='semester';
-    col.innerHTML=`<h2>Semestre ${s.semester}</h2>`;
-
-    s.courses.forEach(c=>{
+    col.className='year';
+    col.innerHTML=`<h2>Nivel ${level.level}</h2>`;
+    level.courses.forEach(c=>{
       const div=document.createElement('div');
       const blocked=!prereqOk(c);
-
       div.className='course';
       if(blocked) div.classList.add('blocked');
       if(c.coreq) div.classList.add('coreq');
-      if(approved(c.code)){ div.classList.add('approved'); credits+=c.cr; }
-
-      div.innerHTML=`<div class="code">${c.code}</div><strong>${c.name}</strong><div class="credits">${c.cr} créditos</div>`;
-
-      if(blocked){
-        const t=document.createElement('div');
-        t.className='tooltip';
-        t.textContent='Debe aprobar prerrequisitos';
-        div.appendChild(t);
+      if(isApproved(c.code)){
+        div.classList.add('approved');
+        totalCredits+=c.cr;
       }
-
-      div.onclick=()=>{ if(blocked) return;
-        state[c.code]=!approved(c.code);
+      div.innerHTML=`<div class="code">${c.code}</div><strong>${c.name}</strong><div class="credits">${c.cr} créditos</div>`;
+      if(blocked){
+        const tip=document.createElement('div');
+        tip.className='tooltip';
+        tip.textContent='Faltan prerrequisitos';
+        div.appendChild(tip);
+      }
+      div.onclick=()=>{
+        if(blocked) return;
+        state[c.code]=!isApproved(c.code);
         localStorage.setItem('qf-progress',JSON.stringify(state));
         render();
       };
-
       col.appendChild(div);
     });
-
     grid.appendChild(col);
   });
-
-  document.getElementById('credits').textContent=credits;
+  document.getElementById('credits').textContent=totalCredits;
 }
-
 render();
 </script>
-
 </body>
 </html>
+
  
