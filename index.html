@@ -1,274 +1,324 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8" />
-<title>Pensum versión 06 – Química Farmacéutica · UdeA</title>
+<meta charset="UTF-8">
+<title>Pensum Ingeniería Biomédica</title>
+
 <style>
 :root{
-  --pink-1:#fde7ef;
-  --pink-2:#f9c5d1;
-  --pink-3:#f48fb1;
-  --pink-4:#ec407a;
-  --pink-5:#ad1457;
-  --blocked:#ececec;
-  --text:#4a2b36;
+    --azul-oscuro:#1e3a8a;
+    --azul-medio:#3b82f6;
+    --azul-claro:#dbeafe;
+    --azul-bloqueado:#eef2ff;
+    --azul-coreq:#2563eb;
 }
-*{box-sizing:border-box}
+
 body{
-  margin:0;
-  font-family:'Segoe UI', system-ui, sans-serif;
-  background:linear-gradient(120deg,var(--pink-1),#fff);
-  color:var(--text);
-}
-header{padding:18px;text-align:center}
-header h1{margin:0;color:var(--pink-5)}
-header p{margin:6px 0 0;font-size:14px}
-
-#progressBox{
-  max-width:1200px;
-  margin:0 auto 20px;
-  background:#fff;
-  padding:14px 16px;
-  border-radius:14px;
-  box-shadow:0 4px 10px rgba(0,0,0,.08);
-}
-#bar{
-  height:10px;
-  background:var(--pink-1);
-  border-radius:10px;
-  overflow:hidden;
-  margin-top:8px;
-}
-#bar span{
-  display:block;
-  height:100%;
-  width:0%;
-  background:linear-gradient(90deg,var(--pink-3),var(--pink-5));
-  transition:.3s;
+    font-family:"Segoe UI",system-ui,sans-serif;
+    background:#f5f8ff;
+    margin:0;
+    padding:20px;
+    color:#1e293b;
 }
 
-#grid{
-  display:grid;
-  grid-template-columns:repeat(10,minmax(240px,1fr));
-  gap:14px;
-  padding:20px;
-  overflow-x:auto;
+h1{
+    text-align:center;
+    margin-bottom:2px;
 }
+
+.subtitle{
+    text-align:center;
+    font-size:13px;
+    opacity:.8;
+    margin-bottom:14px;
+}
+
+#creditsTotal{
+    text-align:center;
+    font-weight:600;
+    margin-bottom:10px;
+}
+
+.progress-container{
+    max-width:900px;
+    margin:0 auto 25px;
+    background:#e0e7ff;
+    border-radius:12px;
+    overflow:hidden;
+    height:14px;
+}
+
+.progress-bar{
+    height:100%;
+    background:linear-gradient(90deg,#3b82f6,#60a5fa);
+    width:0%;
+    transition:.3s;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(10,240px);
+    gap:14px;
+    overflow-x:auto;
+    padding-bottom:20px;
+}
+
 .semester{
-  background:#fff;
-  border-radius:16px;
-  padding:12px;
-  box-shadow:0 6px 14px rgba(0,0,0,.08);
+    background:white;
+    border-radius:16px;
+    padding:10px;
+    box-shadow:0 5px 10px rgba(0,0,0,.05);
 }
+
 .semester h2{
-  text-align:center;
-  color:var(--pink-4);
-  margin:6px 0 10px;
-  font-size:16px;
+    text-align:center;
+    font-size:14px;
+    color:var(--azul-oscuro);
+    margin-bottom:10px;
 }
+
 .course{
-  background:var(--pink-2);
-  border-radius:12px;
-  padding:9px;
-  margin-bottom:9px;
-  cursor:pointer;
-  position:relative;
-  transition:.15s;
-  font-size:14px;
+    background:var(--azul-medio);
+    color:white;
+    padding:8px 9px;
+    border-radius:12px;
+    margin-bottom:8px;
+    cursor:pointer;
+    font-size:13px;
+    position:relative;
+    transition:.2s;
 }
-.course:hover{transform:scale(1.02)}
+
+.course:hover:not(.locked){
+    transform:scale(1.02);
+}
+
+.course .code{
+    font-size:10px;
+    opacity:.9;
+    font-weight:600;
+}
+
+.course small{
+    display:block;
+    font-size:11px;
+    opacity:.9;
+}
+
 .course.approved{
-  background:var(--pink-4);
-  color:#fff;
-  text-decoration:line-through;
+    background:var(--azul-claro);
+    color:#1e40af;
+    text-decoration:line-through;
 }
-.course.viewing{
-  outline:2px solid var(--pink-5);
+
+.course.locked{
+    background:var(--azul-bloqueado);
+    color:#64748b;
+    cursor:not-allowed;
 }
-.course.blocked{
-  background:var(--blocked);
-  color:#999;
-  cursor:not-allowed;
-}
+
+/* 🔬 Correquisitos */
 .course.coreq{
-  border:2px dashed var(--pink-4);
+    border:2px dashed var(--azul-coreq);
 }
-.course .code{font-size:11px;opacity:.75}
-.course .credits{font-size:11px;margin-top:4px}
+
+.course.coreq::after{
+    content:" 🔬";
+}
 
 .tooltip{
-  position:absolute;
-  left:50%;
-  bottom:110%;
-  transform:translateX(-50%);
-  background:#333;
-  color:#fff;
-  padding:6px 8px;
-  border-radius:6px;
-  font-size:12px;
-  white-space:nowrap;
-  display:none;
-  z-index:10;
+    position:absolute;
+    bottom:105%;
+    left:50%;
+    transform:translateX(-50%);
+    background:#1e40af;
+    color:white;
+    font-size:11px;
+    padding:6px 8px;
+    border-radius:6px;
+    display:none;
+    white-space:nowrap;
+    z-index:20;
 }
-.course.blocked:hover .tooltip{display:block}
 
-.legend{
-  max-width:1200px;
-  margin:6px auto 0;
-  display:flex;
-  flex-wrap:wrap;
-  gap:14px;
-  font-size:13px;
+.course.locked:hover .tooltip{
+    display:block;
 }
-.legend span{display:flex;align-items:center;gap:6px}
-.dot{width:14px;height:14px;border-radius:4px}
 </style>
 </head>
+
 <body>
-<header>
-  <h1>Pensum versión 06 – Química Farmacéutica</h1>
-  <p>Universidad de Antioquia · progreso guardado automáticamente</p>
-</header>
 
-<div id="progressBox">
-  Créditos aprobados: <strong><span id="credits">0</span></strong> / 160
-  <div id="bar"><span></span></div>
+<h1>Pensum Ingeniería Biomédica</h1>
+<div class="subtitle">Universidad de Antioquia</div>
+
+<div id="creditsTotal"></div>
+
+<div class="progress-container">
+    <div class="progress-bar" id="progressBar"></div>
 </div>
 
-<div class="legend">
-  <span><div class="dot" style="background:var(--pink-2)"></div>Materia</span>
-  <span><div class="dot" style="background:var(--pink-4)"></div>Aprobada</span>
-  <span><div class="dot" style="border:2px dashed var(--pink-4)"></div>Correquisito 🌸</span>
-  <span><div class="dot" style="background:#ccc"></div>Bloqueada</span>
-  <span><div class="dot" style="outline:2px solid var(--pink-5)"></div>En curso</span>
-</div>
-
-<div id="grid"></div>
+<div class="grid" id="grid"></div>
 
 <script>
-const TOTAL_CREDITS = 160;
+const TOTAL_CREDITS = 170;
+let approved = JSON.parse(localStorage.getItem("ib-approved")||"[]");
 
-const data = [
-  {level:1,courses:[
-    {code:'4007-600',name:'Matemáticas Básica',cr:4},
-    {code:'4008-600',name:'Química General Básica',cr:4},
-    {code:'4008-601',name:'Laboratorio de Química General',cr:1,coreq:['4008-600']},
-    {code:'4012-400',name:'Seguridad y Salud en el Trabajo',cr:1},
-    {code:'4010-500',name:'Técnicas de la Comunicación',cr:2},
-    {code:'4012-402',name:'Desarrollo Humano',cr:1},
-    {code:'4012-404',name:'Introducción a la Farmacia',cr:2},
-    {code:'4012-459',name:'Inglés I',cr:2}
-  ]},
-  {level:2,courses:[
-    {code:'4008-602',name:'Química Orgánica Básica',cr:4,pr:['4008-600','4008-601']},
-    {code:'4008-603',name:'Laboratorio de Química Orgánica',cr:1,coreq:['4008-602']},
-    {code:'4007-602',name:'Bioestadística Básica',cr:2,pr:['4007-600']},
-    {code:'4008-604',name:'Química Analítica Básica',cr:4,pr:['4008-600','4008-601']},
-    {code:'4008-605',name:'Laboratorio de Química Analítica',cr:1,coreq:['4008-604']},
-    {code:'4012-401',name:'Seminario de Matemáticas Básica',cr:1,pr:['4007-600']},
-    {code:'4012-406',name:'Salud Pública',cr:1,pr:['4012-400']},
-    {code:'4012-460',name:'Inglés II',cr:2,pr:['4012-459']}
-  ]},
-  {level:3,courses:[
-    {code:'4009-338',name:'Formación Ciudadana y Constitucional',cr:1,prCredits:30},
-    {code:'4007-604',name:'Física Básica',cr:3,pr:['4012-401']},
-    {code:'4010-600',name:'Biología Celular y Molecular',cr:3,coreq:['4012-412','4012-413']},
-    {code:'4012-412',name:'Bioquímica Biomédica',cr:3,pr:['4008-604','4008-605']},
-    {code:'4012-413',name:'Laboratorio de Bioquímica Biomédica',cr:1,coreq:['4012-412']},
-    {code:'4012-414',name:'Bioética',cr:1,pr:['4012-404']},
-    {code:'4012-407',name:'Prácticas Académicas Comunidad',cr:1,pr:['4012-406']},
-    {code:'4012-405',name:'Metodología de la Investigación Cuantitativa',cr:2},
-    {code:'4012-461',name:'Inglés III',cr:2,pr:['4012-460']}
-  ]},
-  {level:4,courses:[
-    {code:'4012-420',name:'Biotecnología Biomédica',cr:2},
-    {code:'4012-421',name:'Lab. Biotecnología Biomédica',cr:2,coreq:['4012-420']},
-    {code:'4012-416',name:'Fisioanatomía Biomédica',cr:3,pr:['4012-412']},
-    {code:'4012-417',name:'Lab. Fisioanatomía',cr:1,coreq:['4012-416']},
-    {code:'4008-606',name:'Fisicoquímica Básica',cr:3,pr:['4007-604','4008-602']},
-    {code:'4008-607',name:'Lab. Fisicoquímica',cr:1,coreq:['4008-606']},
-    {code:'4010-602',name:'Microbiología Biomédica',cr:2,pr:['4010-600']},
-    {code:'4010-603',name:'Lab. Microbiología',cr:1,coreq:['4010-602']},
-    {code:'4012-462',name:'Inglés IV',cr:2,pr:['4012-461']}
-  ]},
-  {level:5,courses:[
-    {code:'4008-608',name:'Análisis Instrumental Básica',cr:3,pr:['4008-606','4008-607']},
-    {code:'4008-609',name:'Lab. Análisis Instrumental',cr:1,coreq:['4008-608']},
-    {code:'4012-418',name:'Farmacognosia Farmacéutica',cr:3,pr:['4008-602','4008-603']},
-    {code:'4012-419',name:'Lab. Farmacognosia',cr:1,coreq:['4012-418']},
-    {code:'4012-440',name:'Biofarmacia y Farmacocinética',cr:2,pr:['4012-416','4008-606']},
-    {code:'4012-422',name:'Operaciones Unitarias Farmacéuticas',cr:2,pr:['4008-606']},
-    {code:'4012-409',name:'Prácticas Académicas Servicios Farmacéuticos',cr:1,pr:['4012-407'],coreq:['4012-410']},
-    {code:'4012-410',name:'Legislación Farmacéutica',cr:1,pr:['4012-420']},
-    {code:'4012-429',name:'Diseño de Experimentos',cr:1,pr:['4012-405']},
-    {code:'4012-463',name:'Inglés V',cr:2,pr:['4012-462']}
-  ]},
-  {level:6,courses:[
-    {code:'4012-442',name:'Fitoquímica Farmacéutica',cr:2,pr:['4012-418']},
-    {code:'4012-443',name:'Lab. Fitoquímica',cr:2,coreq:['4012-442']},
-    {code:'4012-426',name:'Tecnología Farmacéutica I',cr:3,pr:['4012-422']},
-    {code:'4012-427',name:'Lab. Tecnología Farmacéutica I',cr:2,coreq:['4012-426']},
-    {code:'4012-428',name:'Electiva Socio-Humanística',cr:1,pr:['4012-410']},
-    {code:'4012-430',name:'Análisis y Control de Medicamentos I',cr:3,pr:['4008-608','4008-609'],coreq:['4012-426','4012-427']},
-    {code:'4012-431',name:'Lab. Análisis y Control I',cr:2,coreq:['4012-430']},
-    {code:'4012-411',name:'Prácticas Académicas Sector Productivo',cr:2,pr:['4012-409']}
-  ]},
-  {level:7,courses:[
-    {code:'4012-432',name:'Tecnología Farmacéutica II',cr:3,pr:['4012-426','4012-427']},
-    {code:'4012-433',name:'Lab. Tecnología Farmacéutica II',cr:2,coreq:['4012-432']},
-    {code:'4012-448',name:'Administración Farmacéutica',cr:2,pr:['4012-410']},
-    {code:'4012-436',name:'Análisis y Control de Medicamentos II',cr:2,pr:['4012-430','4012-431'],coreq:['4012-432','4012-433']},
-    {code:'4012-437',name:'Lab. Análisis y Control II',cr:1,coreq:['4012-436']},
-    {code:'4012-439',name:'Prácticas Académicas Elaboración Proyecto',cr:2,pr:['4012-411']},
-    {code:'4012-444',name:'Cosméticos',cr:2,coreq:['4012-432']},
-    {code:'4012-445',name:'Lab. Cosméticos',cr:1,coreq:['4012-444','4012-433']}
-  ]},
-  {level:8,courses:[
-    {code:'4012-434',name:'Toxicología Biomédica',cr:2,pr:['4012-436','4012-437']},
-    {code:'4012-435',name:'Lab. Toxicología',cr:1,coreq:['4012-434']},
-    {code:'4012-408',name:'Farmacología Biomédica',cr:4,pr:['4012-440','4012-442']},
-    {code:'4012-424',name:'Nutrición y Bromatología',cr:2,pr:['4012-432','4012-440']},
-    {code:'4012-425',name:'Lab. Nutrición y Bromatología',cr:1,coreq:['4012-424']},
-    {code:'4012-446',name:'Farmacia Hospitalaria y Ambulatoria',cr:2,pr:['4012-409','4012-436']},
-    {code:'4012-441',name:'Prácticas Académicas Desarrollo Proyecto I',cr:2,pr:['4012-439']}
-  ]},
-  {level:9,courses:[
-    {code:'4012-438',name:'Electiva Administrativa',cr:1,pr:['4012-432','4012-448']},
-    {code:'4012-450',name:'Farmacia Clínica',cr:4,pr:['4012-408','4012-446']},
-    {code:'4012-451',name:'Prácticas Farmacia Clínica',cr:3,coreq:['4012-450']},
-    {code:'4012-452',name:'Química Farmacéutica',cr:2,pr:['4012-436','4012-408']},
-    {code:'4012-453',name:'Lab. Química Farmacéutica',cr:1,coreq:['4012-452']},
-    {code:'4012-454',name:'Farmacia Magistral',cr:2,pr:['4012-432','4012-433']},
-    {code:'4012-455',name:'Lab. Farmacia Magistral',cr:1,coreq:['4012-454']},
-    {code:'4012-457',name:'Práctica Académica Desarrollo Proyecto II',cr:2,pr:['4012-441']},
-    {code:'4012-456',name:'Aseguramiento de la Calidad',cr:1,pr:['4012-432']}
-  ]},
-  {level:10,courses:[
-    {code:'4012-459F',name:'Práctica Académica Final',cr:16,prCredits:149}
-  ]}
+const semesters = [
+{
+name:"Semestre 1",
+courses:[
+{id:"IB101",name:"Cálculo Diferencial",cr:4},
+{id:"IB102",name:"Álgebra Lineal",cr:3},
+{id:"IB103",name:"Introducción a la Ingeniería Biomédica",cr:2},
+{id:"IB104",name:"Programación I",cr:3},
+{id:"IB105",name:"Comunicación Escrita",cr:2}
+]},
+{
+name:"Semestre 2",
+courses:[
+{id:"IB201",name:"Cálculo Integral",cr:4,pr:["IB101"]},
+{id:"IB202",name:"Física Mecánica",cr:4,pr:["IB101"]},
+{id:"IB203",name:"Programación II",cr:3,pr:["IB104"]},
+{id:"IB204",name:"Probabilidad y Estadística",cr:3},
+{id:"IB205",name:"Ética Profesional",cr:2}
+]},
+{
+name:"Semestre 3",
+courses:[
+{id:"IB301",name:"Cálculo Multivariado",cr:4,pr:["IB201"]},
+{id:"IB302",name:"Física Electricidad y Magnetismo",cr:4,pr:["IB202"]},
+{id:"IB303",name:"Estructuras de Datos",cr:3,pr:["IB203"]},
+{id:"IB304",name:"Señales y Sistemas",cr:3,pr:["IB201","IB202"]},
+{id:"IB305",name:"Biología Celular",cr:3}
+]},
+{
+name:"Semestre 4",
+courses:[
+{id:"IB401",name:"Ecuaciones Diferenciales",cr:3,pr:["IB301"]},
+{id:"IB402",name:"Electrónica Básica",cr:3,pr:["IB302"]},
+{id:"IB403",name:"Lab. Electrónica Básica",cr:1,coreq:["IB402"]},
+{id:"IB404",name:"Fisiología Humana",cr:3,pr:["IB305"]},
+{id:"IB405",name:"Análisis Numérico",cr:3,pr:["IB301"]}
+]},
+{
+name:"Semestre 5",
+courses:[
+{id:"IB501",name:"Electrónica Analógica",cr:3,pr:["IB402"]},
+{id:"IB502",name:"Lab. Electrónica Analógica",cr:1,coreq:["IB501"]},
+{id:"IB503",name:"Instrumentación Biomédica I",cr:3,pr:["IB304","IB402"]},
+{id:"IB504",name:"Biomecánica",cr:3,pr:["IB404","IB202"]},
+{id:"IB505",name:"Procesamiento Digital de Señales",cr:3,pr:["IB304"]}
+]},
+{
+name:"Semestre 6",
+courses:[
+{id:"IB601",name:"Electrónica Digital",cr:3,pr:["IB501"]},
+{id:"IB602",name:"Lab. Electrónica Digital",cr:1,coreq:["IB601"]},
+{id:"IB603",name:"Instrumentación Biomédica II",cr:3,pr:["IB503"]},
+{id:"IB604",name:"Imágenes Médicas",cr:3,pr:["IB505"]},
+{id:"IB605",name:"Electiva I",cr:2}
+]},
+{
+name:"Semestre 7",
+courses:[
+{id:"IB701",name:"Control de Sistemas",cr:3,pr:["IB401","IB304"]},
+{id:"IB702",name:"Lab. Control de Sistemas",cr:1,coreq:["IB701"]},
+{id:"IB703",name:"Bioinstrumentación Clínica",cr:3,pr:["IB603"]},
+{id:"IB704",name:"Ingeniería de Rehabilitación",cr:3,pr:["IB504"]},
+{id:"IB705",name:"Electiva II",cr:2}
+]},
+{
+name:"Semestre 8",
+courses:[
+{id:"IB801",name:"Procesamiento de Imágenes Médicas",cr:3,pr:["IB604"]},
+{id:"IB802",name:"Biomecánica Avanzada",cr:3,pr:["IB504"]},
+{id:"IB803",name:"Gestión de Tecnología en Salud",cr:2},
+{id:"IB804",name:"Proyecto I",cr:3,pr:["IB703","IB701"]},
+{id:"IB805",name:"Electiva III",cr:2}
+]},
+{
+name:"Semestre 9",
+courses:[
+{id:"IB901",name:"Regulación y Normatividad Biomédica",cr:2},
+{id:"IB902",name:"Ingeniería Clínica",cr:3,pr:["IB703"]},
+{id:"IB903",name:"Proyecto II",cr:4,pr:["IB804"]},
+{id:"IB904",name:"Electiva IV",cr:2}
+]},
+{
+name:"Semestre 10",
+courses:[
+{id:"IB1001",name:"Trabajo de Grado",cr:8,pr:["IB903"]},
+{id:"IB1002",name:"Electiva V",cr:2}
+]}
 ];
-        }
-        localStorage.setItem('qf-progress',JSON.stringify(state));
-        localStorage.setItem('qf-viewing',JSON.stringify(viewing));
-        render();
-      };
 
-      div.ondblclick=()=>{
-        if(blocked) return;
-        state[c.code]=!isApproved(c.code);
-        if(state[c.code]) viewing[c.code]=false;
-        localStorage.setItem('qf-progress',JSON.stringify(state));
-        localStorage.setItem('qf-viewing',JSON.stringify(viewing));
-        render();
-      };
+const grid=document.getElementById("grid");
 
-      col.appendChild(div);
+function isApproved(id){return approved.includes(id);}
+
+function currentCredits(){
+    let sum=0;
+    semesters.forEach(s=>s.courses.forEach(c=>{
+        if(isApproved(c.id)) sum+=c.cr;
+    }));
+    return sum;
+}
+
+function canUnlock(c){
+    if(c.pr && !c.pr.every(p=>isApproved(p))) return false;
+    if(c.coreq && !c.coreq.some(q=>isApproved(q))) return false;
+    return true;
+}
+
+function render(){
+    grid.innerHTML="";
+    let credits=currentCredits();
+
+    semesters.forEach(s=>{
+        const col=document.createElement("div");
+        col.className="semester";
+        col.innerHTML=`<h2>${s.name}</h2>`;
+
+        s.courses.forEach(c=>{
+            const d=document.createElement("div");
+            const unlocked=canUnlock(c);
+
+            d.className="course";
+            if(c.coreq) d.classList.add("coreq");
+            if(!unlocked && !isApproved(c.id)) d.classList.add("locked");
+            if(isApproved(c.id)) d.classList.add("approved");
+
+            let tip=[];
+            if(c.pr) tip.push("PR: "+c.pr.join(", "));
+            if(c.coreq) tip.push("CO: "+c.coreq.join(", "));
+
+            d.innerHTML=`
+                <div class="code">${c.id}</div>
+                ${c.name}
+                <small>${c.cr} créditos</small>
+                <div class="tooltip">${tip.join(" | ")}</div>
+            `;
+
+            d.onclick=()=>{
+                if(!unlocked && !isApproved(c.id)) return;
+                approved=isApproved(c.id)
+                    ?approved.filter(x=>x!==c.id)
+                    :[...approved,c.id];
+                localStorage.setItem("ib-approved",JSON.stringify(approved));
+                render();
+            };
+
+            col.appendChild(d);
+        });
+        grid.appendChild(col);
     });
-    grid.appendChild(col);
-  });
 
-  document.getElementById('credits').textContent=total;
-  document.querySelector('#bar span').style.width=(total/TOTAL_CREDITS*100)+'%';
+    document.getElementById("creditsTotal").textContent=
+        `Créditos aprobados: ${credits} / ${TOTAL_CREDITS}`;
+
+    document.getElementById("progressBar").style.width=
+        Math.min(credits/TOTAL_CREDITS*100,100)+"%";
 }
 
 render();
@@ -276,4 +326,3 @@ render();
 </body>
 </html>
 
- 
