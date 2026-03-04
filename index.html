@@ -1,328 +1,709 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<title>Pensum Ingeniería Biomédica</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Malla Curricular Interactiva - Química Farmacéutica UdeA</title>
+    <style>
+        :root {
+            --bg-color: #fff0f5;
+            --card-bg: #ffffff;
+            --text-color: #4a1428;
+            --primary-pink: #c2185b;
+            --primary-pink-hover: #880e4f;
+            --light-pink: #f8bbd0;
+            --approved-bg: #fce4ec;
+            --approved-text: #880e4f;
+            --blocked-bg: #f5f5f5;
+            --blocked-text: #bdbdbd;
+            --border-color: #f48fb1;
+            --shadow: 0 2px 5px rgba(194, 24, 91, 0.15);
+            --font-main: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
 
-<style>
-:root{
-    --azul-oscuro:#1e3a8a;
-    --azul-medio:#3b82f6;
-    --azul-claro:#dbeafe;
-    --azul-bloqueado:#eef2ff;
-    --azul-coreq:#2563eb;
-}
+        body {
+            font-family: var(--font-main);
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
 
-body{
-    font-family:"Segoe UI",system-ui,sans-serif;
-    background:#f5f8ff;
-    margin:0;
-    padding:20px;
-    color:#1e293b;
-}
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+            width: 100%;
+            max-width: 1400px;
+        }
 
-h1{
-    text-align:center;
-    margin-bottom:2px;
-}
+        h1 {
+            color: var(--primary-pink);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
 
-.subtitle{
-    text-align:center;
-    font-size:13px;
-    opacity:.8;
-    margin-bottom:14px;
-}
+        .progress-container {
+            width: 100%;
+            background-color: #e0e0e0;
+            border-radius: 15px;
+            margin: 15px 0 5px 0;
+            height: 30px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+        }
 
-#creditsTotal{
-    text-align:center;
-    font-weight:600;
-    margin-bottom:10px;
-}
+        .progress-bar {
+            height: 100%;
+            background-color: var(--primary-pink);
+            width: 0%;
+            transition: width 0.5s ease;
+            border-radius: 15px;
+        }
 
-.progress-container{
-    max-width:900px;
-    margin:0 auto 25px;
-    background:#e0e7ff;
-    border-radius:12px;
-    overflow:hidden;
-    height:14px;
-}
+        .progress-text {
+            text-align: center;
+            font-weight: bold;
+            color: var(--primary-pink-hover);
+            font-size: 1rem;
+            margin-bottom: 20px;
+            min-height: 1.5em;
+        }
 
-.progress-bar{
-    height:100%;
-    background:linear-gradient(90deg,#3b82f6,#60a5fa);
-    width:0%;
-    transition:.3s;
-}
+        .controls {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
 
-.grid{
-    display:grid;
-    grid-template-columns:repeat(10,240px);
-    gap:14px;
-    overflow-x:auto;
-    padding-bottom:20px;
-}
+        button.reset-btn {
+            background-color: var(--primary-pink);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background 0.3s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
 
-.semester{
-    background:white;
-    border-radius:16px;
-    padding:10px;
-    box-shadow:0 5px 10px rgba(0,0,0,.05);
-}
+        button.reset-btn:hover {
+            background-color: var(--primary-pink-hover);
+        }
 
-.semester h2{
-    text-align:center;
-    font-size:14px;
-    color:var(--azul-oscuro);
-    margin-bottom:10px;
-}
+        .legend {
+            font-size: 0.85rem;
+            color: #555;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
 
-.course{
-    background:var(--azul-medio);
-    color:white;
-    padding:8px 9px;
-    border-radius:12px;
-    margin-bottom:8px;
-    cursor:pointer;
-    font-size:13px;
-    position:relative;
-    transition:.2s;
-}
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
 
-.course:hover:not(.locked){
-    transform:scale(1.02);
-}
+        .legend-box {
+            width: 15px;
+            height: 15px;
+            border-radius: 3px;
+        }
 
-.course .code{
-    font-size:10px;
-    opacity:.9;
-    font-weight:600;
-}
+        .malla-container {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 12px;
+            width: 100%;
+            max-width: 1600px;
+            overflow-x: auto;
+            padding-bottom: 20px;
+        }
 
-.course small{
-    display:block;
-    font-size:11px;
-    opacity:.9;
-}
+        .semester-column {
+            background-color: rgba(255,255,255,0.6);
+            border-radius: 12px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            min-width: 150px;
+            border: 1px solid var(--light-pink);
+        }
 
-.course.approved{
-    background:var(--azul-claro);
-    color:#1e40af;
-    text-decoration:line-through;
-}
+        .semester-header {
+            text-align: center;
+            font-weight: bold;
+            color: var(--primary-pink);
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--border-color);
+            margin-bottom: 5px;
+            font-size: 1.1rem;
+        }
 
-.course.locked{
-    background:var(--azul-bloqueado);
-    color:#64748b;
-    cursor:not-allowed;
-}
+        .course-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 10px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            box-shadow: var(--shadow);
+            user-select: none;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100%;
+        }
 
-/* 🔬 Correquisitos */
-.course.coreq{
-    border:2px dashed var(--azul-coreq);
-}
+        .course-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(194, 24, 91, 0.2);
+            z-index: 10;
+            border-color: var(--primary-pink);
+        }
 
-.course.coreq::after{
-    content:" 🔬";
-}
+        .course-header {
+            margin-bottom: 5px;
+        }
 
-.tooltip{
-    position:absolute;
-    bottom:105%;
-    left:50%;
-    transform:translateX(-50%);
-    background:#1e40af;
-    color:white;
-    font-size:11px;
-    padding:6px 8px;
-    border-radius:6px;
-    display:none;
-    white-space:nowrap;
-    z-index:20;
-}
+        .course-code {
+            font-size: 0.65rem;
+            color: #880e4f;
+            margin-bottom: 2px;
+            display: block;
+            font-weight: bold;
+        }
 
-.course.locked:hover .tooltip{
-    display:block;
-}
-</style>
+        .course-name {
+            font-weight: 600;
+            line-height: 1.3;
+            margin-bottom: 4px;
+            display: block;
+            color: var(--text-color);
+        }
+
+        .course-credits {
+            font-size: 0.65rem;
+            color: var(--primary-pink);
+            font-weight: bold;
+            display: block;
+            text-align: right;
+            margin-top: auto;
+            padding-top: 5px;
+            border-top: 1px dashed var(--light-pink);
+        }
+
+        .course-card.approved {
+            background-color: var(--approved-bg);
+            border-color: var(--primary-pink);
+            color: var(--approved-text);
+            text-decoration: line-through;
+            opacity: 0.9;
+            box-shadow: none;
+        }
+        
+        .course-card.approved .course-code,
+        .course-card.approved .course-credits {
+            color: var(--approved-text);
+        }
+
+        .course-card.selected {
+            border: 2px solid var(--primary-pink);
+            background-color: #fff0f5;
+            transform: scale(1.02);
+        }
+
+        .course-card.blocked {
+            background-color: var(--blocked-bg);
+            border-color: #e0e0e0;
+            color: var(--blocked-text);
+            cursor: not-allowed;
+            opacity: 0.8;
+            pointer-events: none;
+            box-shadow: none;
+        }
+
+        .course-card.corequisite-style {
+            border-style: dashed;
+            border-width: 2px;
+            border-color: var(--light-pink);
+        }
+        
+        .course-card.corequisite-style.approved {
+            border-style: solid;
+        }
+
+        .tooltip-text {
+            visibility: hidden;
+            width: 240px;
+            background-color: #4a1428;
+            color: #fff;
+            text-align: left;
+            border-radius: 8px;
+            padding: 12px;
+            position: absolute;
+            z-index: 100;
+            bottom: 110%;
+            left: 50%;
+            margin-left: -120px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.75rem;
+            font-weight: normal;
+            text-decoration: none;
+            pointer-events: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            line-height: 1.5;
+        }
+
+        .tooltip-text::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 6px;
+            border-style: solid;
+            border-color: #4a1428 transparent transparent transparent;
+        }
+
+        .tooltip-title {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 6px;
+            color: #f8bbd0;
+            border-bottom: 1px solid #f48fb1;
+            padding-bottom: 4px;
+            font-size: 0.8rem;
+        }
+
+        .tooltip-section {
+            margin-bottom: 8px;
+        }
+
+        .tooltip-item {
+            display: block;
+            margin-bottom: 4px;
+            padding-left: 5px;
+            color: #fff;
+        }
+        
+        .tooltip-item::before {
+            content: "⚠ ";
+            color: #f8bbd0;
+        }
+
+        .course-card.blocked:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        @media (max-width: 1200px) {
+            .malla-container {
+                grid-template-columns: repeat(5, 1fr);
+            }
+        }
+        @media (max-width: 700px) {
+            .malla-container {
+                grid-template-columns: 1fr;
+            }
+            .semester-column {
+                min-width: 100%;
+            }
+        }
+    </style>
 </head>
-
 <body>
 
-<h1>Pensum Ingeniería Biomédica</h1>
-<div class="subtitle">Universidad de Antioquia</div>
+<header>
+    <h1>Química Farmacéutica - Universidad de Antioquia</h1>
+    <p>Plan de Estudios Versión 06 (Acuerdo 0242)</p>
+    
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+    <div class="progress-text" id="progressText">0% Completado (0/165 Créditos)</div>
 
-<div id="creditsTotal"></div>
+    <div class="controls">
+        <div class="legend">
+            <div class="legend-item"><div class="legend-box" style="background:var(--card-bg); border:1px solid var(--border-color)"></div> Disponible</div>
+            <div class="legend-item"><div class="legend-box" style="background:var(--approved-bg); border:1px solid var(--primary-pink)"></div> Aprobada</div>
+            <div class="legend-item"><div class="legend-box" style="background:#f5f5f5; border:1px solid #e0e0e0"></div> Bloqueada</div>
+            <div class="legend-item"><div class="legend-box" style="border:2px dashed var(--light-pink); background:white"></div> Con Correquisito 🌸</div>
+        </div>
+        <button class="reset-btn" onclick="resetProgress()">Reiniciar Progreso</button>
+    </div>
+    <p style="font-size: 0.85rem; color: #880e4f; max-width: 800px; text-align: center; background: white; padding: 10px; border-radius: 8px; border: 1px solid var(--light-pink);">
+        💡 <strong>Instrucciones:</strong> Haz clic en una materia para marcarla como <strong>Aprobada</strong>. 
+        Si está bloqueada (gris), pasa el mouse para ver qué prerrequisitos o correquisitos faltan. 
+        Las materias con borde punteado y emoji 🌸 tienen correquisitos que debes cursar simultáneamente.
+    </p>
+</header>
 
-<div class="progress-container">
-    <div class="progress-bar" id="progressBar"></div>
-</div>
-
-<div class="grid" id="grid"></div>
+<div class="malla-container" id="mallaGrid"></div>
 
 <script>
-const TOTAL_CREDITS = 170;
-let approved = JSON.parse(localStorage.getItem("ib-approved")||"[]");
+    const curriculumData = [
+        {
+            level: 1,
+            courses: [
+                { code: "4007600", name: "Matemáticas", credits: 4, pr: [], co: [] },
+                { code: "4008610", name: "Química General", credits: 4, pr: [], co: [] },
+                { code: "4008601", name: "Laboratorio de Química General", credits: 1, pr: [], co: ["4008610"] },
+                { code: "4012400", name: "Seguridad y Salud en el Trabajo", credits: 1, pr: [], co: [] },
+                { code: "4010507", name: "Técnicas de la Comunicación", credits: 2, pr: [], co: [] },
+                { code: "4012402", name: "Desarrollo Humano", credits: 1, pr: [], co: [] },
+                { code: "4012404", name: "Introducción a la Farmacia", credits: 2, pr: [], co: [] },
+                { code: "9040101", name: "English 1", credits: 2, pr: [], co: [] }
+            ]
+        },
+        {
+            level: 2,
+            courses: [
+                { code: "4008611", name: "Química Orgánica", credits: 4, pr: ["4008610", "4008601"], co: [] },
+                { code: "4008603", name: "Laboratorio de Química Orgánica", credits: 1, pr: ["4008601"], co: ["4008611"] },
+                { code: "4007605", name: "Bioestadística", credits: 2, pr: ["4007600"], co: [] },
+                { code: "4008612", name: "Química Analítica", credits: 4, pr: ["4008610", "4008601"], co: [] },
+                { code: "4008605", name: "Laboratorio de Química Analítica", credits: 1, pr: [], co: ["4008612"] },
+                { code: "4012401", name: "Seminario de Matemáticas", credits: 1, pr: ["4007600"], co: [] },
+                { code: "4012406", name: "Salud Pública", credits: 1, pr: ["4012400"], co: [] },
+                { code: "4012403", name: "Metodología de la Investigación Cualitativa", credits: 1, pr: ["4007605"], co: ["4007605"] },
+                { code: "9040102", name: "English 2", credits: 2, pr: ["9040101"], co: [] }
+            ]
+        },
+        {
+            level: 3,
+            courses: [
+                { code: "4009339", name: "Formación Ciudadana y Constitucional", credits: 1, pr: ["30_CR"], co: [] },
+                { code: "4007604", name: "Física", credits: 3, pr: ["4012401"], co: [] },
+                { code: "4010600", name: "Biología Celular y Molecular", credits: 3, pr: [], co: ["4012412", "4012413"] },
+                { code: "4012412", name: "Bioquímica", credits: 3, pr: ["4008611", "4008603"], co: [] },
+                { code: "4012413", name: "Laboratorio de Bioquímica", credits: 1, pr: [], co: ["4012412"] },
+                { code: "4012414", name: "Bioética", credits: 1, pr: ["4012404"], co: [] },
+                { code: "4012407", name: "Prácticas Académicas Comunidad", credits: 1, pr: ["4012406", "4012403"], co: ["4012405"] },
+                { code: "4012405", name: "Metodología de la Investigación Cuantitativa", credits: 2, pr: ["4012403", "4007605"], co: [] },
+                { code: "9040103", name: "English 3", credits: 2, pr: ["9040102"], co: [] }
+            ]
+        },
+        {
+            level: 4,
+            courses: [
+                { code: "4012420", name: "Biotecnología", credits: 2, pr: ["4010600"], co: [] },
+                { code: "4012421", name: "Laboratorio de Biotecnología", credits: 2, pr: [], co: ["4012420"] },
+                { code: "4012416", name: "Fisioanatomía", credits: 3, pr: ["4012412"], co: [] },
+                { code: "4012417", name: "Laboratorio de Fisioanatomía", credits: 1, pr: [], co: ["4012416"] },
+                { code: "4008613", name: "Fisicoquímica", credits: 3, pr: ["4007604", "4008603"], co: [] },
+                { code: "4008607", name: "Laboratorio de Fisicoquímica", credits: 1, pr: [], co: ["4008613"] },
+                { code: "4010602", name: "Microbiología", credits: 2, pr: ["4010600"], co: [] },
+                { code: "4010603", name: "Laboratorio de Microbiología", credits: 1, pr: [], co: ["4010602"] },
+                { code: "9040104", name: "English 4", credits: 2, pr: ["9040103"], co: [] }
+            ]
+        },
+        {
+            level: 5,
+            courses: [
+                { code: "4008614", name: "Análisis Instrumental", credits: 3, pr: ["4008613", "4008607"], co: [] },
+                { code: "4008609", name: "Laboratorio de Análisis Instrumental", credits: 1, pr: ["4008607"], co: ["4008614"] },
+                { code: "4012418", name: "Farmacognosia", credits: 3, pr: ["4008611", "4008603"], co: [] },
+                { code: "4012419", name: "Laboratorio de Farmacognosia", credits: 1, pr: ["4008603"], co: ["4012418"] },
+                { code: "4012440", name: "Biofarmacia y Farmacocinética", credits: 2, pr: ["4012416", "4008613"], co: [] },
+                { code: "4012422", name: "Operaciones Unitarias Farmacéuticas", credits: 2, pr: ["4008613"], co: [] },
+                { code: "4012409", name: "Prácticas Académicas Servicios y Establecimientos Farmacéuticos", credits: 1, pr: ["4012407"], co: ["4012410"] },
+                { code: "4012410", name: "Legislación Farmacéutica", credits: 1, pr: ["4012414"], co: [] },
+                { code: "4012429", name: "Diseño de Experimentos", credits: 1, pr: ["4012405"], co: [] },
+                { code: "9040105", name: "English 5", credits: 2, pr: ["9040104"], co: [] }
+            ]
+        },
+        {
+            level: 6,
+            courses: [
+                { code: "4012442", name: "Fitoquímica", credits: 2, pr: ["4012418", "4008614", "4008609"], co: [] },
+                { code: "4012443", name: "Laboratorio de Fitoquímica", credits: 2, pr: [], co: ["4012442"] },
+                { code: "4012426", name: "Tecnología Farmacéutica I", credits: 3, pr: ["4012422"], co: [] },
+                { code: "4012427", name: "Laboratorio de Tecnología Farmacéutica I", credits: 2, pr: [], co: ["4012426"] },
+                { code: "4012430", name: "Análisis y Control de Medicamentos y Afines I", credits: 3, pr: ["4008614", "4008609"], co: ["4012426", "4012427"] },
+                { code: "4012431", name: "Laboratorio de Análisis y Control de Medicamentos y Afines I", credits: 2, pr: [], co: ["4012430"] },
+                { code: "4012411", name: "Prácticas Académicas Sector Productivo", credits: 2, pr: ["4012409"], co: [] },
+                { code: "4013210", name: "Electiva Socio-Humanística", credits: 1, pr: ["4012410"], co: [] }
+            ]
+        },
+        {
+            level: 7,
+            courses: [
+                { code: "4012432", name: "Tecnología Farmacéutica II", credits: 3, pr: ["4012426", "4012427"], co: [] },
+                { code: "4012433", name: "Laboratorio de Tecnología Farmacéutica II", credits: 2, pr: [], co: ["4012432"] },
+                { code: "4012448", name: "Administración Farmacéutica", credits: 2, pr: ["4012410"], co: [] },
+                { code: "4012436", name: "Análisis y Control de Medicamentos y Afines II", credits: 2, pr: ["4012430", "4012431"], co: ["4012432", "4012433"] },
+                { code: "4012437", name: "Laboratorio de Análisis y Control de Medicamentos y Afines II", credits: 1, pr: [], co: ["4012436"] },
+                { code: "4012439", name: "Prácticas Académicas Elaboración Proyecto", credits: 2, pr: ["4012411"], co: [] },
+                { code: "4012444", name: "Cosméticos", credits: 2, pr: [], co: ["4012432"] },
+                { code: "4012445", name: "Laboratorio de Cosméticos", credits: 1, pr: [], co: ["4012444", "4012433"] }
+            ]
+        },
+        {
+            level: 8,
+            courses: [
+                { code: "4012434", name: "Toxicología", credits: 2, pr: ["4012436", "4012437"], co: [] },
+                { code: "4012435", name: "Laboratorio de Toxicología", credits: 1, pr: [], co: ["4012434"] },
+                { code: "4012415", name: "Seminario de Farmacología", credits: 1, pr: [], co: ["4012408"] },
+                { code: "4012424", name: "Nutrición y Bromatología", credits: 2, pr: ["4012432", "4012440"], co: [] },
+                { code: "4012425", name: "Laboratorio de Nutrición y Bromatología", credits: 1, pr: [], co: ["4012424"] },
+                { code: "4012408", name: "Farmacología", credits: 4, pr: ["4012440", "4012442"], co: [] },
+                { code: "4012446", name: "Farmacia Hospitalaria y Ambulatoria", credits: 2, pr: ["4012409", "4012436"], co: [] },
+                { code: "4012441", name: "Prácticas Académicas Desarrollo de Proyecto I", credits: 2, pr: ["4012439"], co: [] }
+            ]
+        },
+        {
+            level: 9,
+            courses: [
+                { code: "4012438", name: "Electiva Administrativa", credits: 1, pr: ["4012432", "4012448"], co: [] },
+                { code: "4012450", name: "Farmacia Clínica", credits: 4, pr: ["4012408", "4012446"], co: [] },
+                { code: "4012451", name: "Prácticas en Farmacia Clínica", credits: 3, pr: [], co: ["4012450"] },
+                { code: "4012452", name: "Química Farmacéutica", credits: 2, pr: ["4012436", "4012408"], co: [] },
+                { code: "4012453", name: "Laboratorio de Química Farmacéutica", credits: 1, pr: [], co: ["4012452"] },
+                { code: "4012454", name: "Farmacia Magistral", credits: 2, pr: ["4012432", "4012433", "4012425", "4012424"], co: [] },
+                { code: "4012455", name: "Laboratorio de Farmacia Magistral", credits: 1, pr: [], co: ["4012454"] },
+                { code: "4012457", name: "Práctica Académica Desarrollo de Proyecto II", credits: 2, pr: ["4012441"], co: [] },
+                { code: "4012456", name: "Aseguramiento de la Calidad", credits: 1, pr: ["4012432"], co: [] }
+            ]
+        },
+        {
+            level: 10,
+            courses: [
+                { code: "4012464", name: "Práctica Académica Final", credits: 16, pr: ["149_CR"], co: [] }
+            ]
+        }
+    ];
 
-const semesters = [
-{
-name:"Semestre 1",
-courses:[
-{id:"IB101",name:"Cálculo Diferencial",cr:4},
-{id:"IB102",name:"Álgebra Lineal",cr:3},
-{id:"IB103",name:"Introducción a la Ingeniería Biomédica",cr:2},
-{id:"IB104",name:"Programación I",cr:3},
-{id:"IB105",name:"Comunicación Escrita",cr:2}
-]},
-{
-name:"Semestre 2",
-courses:[
-{id:"IB201",name:"Cálculo Integral",cr:4,pr:["IB101"]},
-{id:"IB202",name:"Física Mecánica",cr:4,pr:["IB101"]},
-{id:"IB203",name:"Programación II",cr:3,pr:["IB104"]},
-{id:"IB204",name:"Probabilidad y Estadística",cr:3},
-{id:"IB205",name:"Ética Profesional",cr:2}
-]},
-{
-name:"Semestre 3",
-courses:[
-{id:"IB301",name:"Cálculo Multivariado",cr:4,pr:["IB201"]},
-{id:"IB302",name:"Física Electricidad y Magnetismo",cr:4,pr:["IB202"]},
-{id:"IB303",name:"Estructuras de Datos",cr:3,pr:["IB203"]},
-{id:"IB304",name:"Señales y Sistemas",cr:3,pr:["IB201","IB202"]},
-{id:"IB305",name:"Biología Celular",cr:3}
-]},
-{
-name:"Semestre 4",
-courses:[
-{id:"IB401",name:"Ecuaciones Diferenciales",cr:3,pr:["IB301"]},
-{id:"IB402",name:"Electrónica Básica",cr:3,pr:["IB302"]},
-{id:"IB403",name:"Lab. Electrónica Básica",cr:1,coreq:["IB402"]},
-{id:"IB404",name:"Fisiología Humana",cr:3,pr:["IB305"]},
-{id:"IB405",name:"Análisis Numérico",cr:3,pr:["IB301"]}
-]},
-{
-name:"Semestre 5",
-courses:[
-{id:"IB501",name:"Electrónica Analógica",cr:3,pr:["IB402"]},
-{id:"IB502",name:"Lab. Electrónica Analógica",cr:1,coreq:["IB501"]},
-{id:"IB503",name:"Instrumentación Biomédica I",cr:3,pr:["IB304","IB402"]},
-{id:"IB504",name:"Biomecánica",cr:3,pr:["IB404","IB202"]},
-{id:"IB505",name:"Procesamiento Digital de Señales",cr:3,pr:["IB304"]}
-]},
-{
-name:"Semestre 6",
-courses:[
-{id:"IB601",name:"Electrónica Digital",cr:3,pr:["IB501"]},
-{id:"IB602",name:"Lab. Electrónica Digital",cr:1,coreq:["IB601"]},
-{id:"IB603",name:"Instrumentación Biomédica II",cr:3,pr:["IB503"]},
-{id:"IB604",name:"Imágenes Médicas",cr:3,pr:["IB505"]},
-{id:"IB605",name:"Electiva I",cr:2}
-]},
-{
-name:"Semestre 7",
-courses:[
-{id:"IB701",name:"Control de Sistemas",cr:3,pr:["IB401","IB304"]},
-{id:"IB702",name:"Lab. Control de Sistemas",cr:1,coreq:["IB701"]},
-{id:"IB703",name:"Bioinstrumentación Clínica",cr:3,pr:["IB603"]},
-{id:"IB704",name:"Ingeniería de Rehabilitación",cr:3,pr:["IB504"]},
-{id:"IB705",name:"Electiva II",cr:2}
-]},
-{
-name:"Semestre 8",
-courses:[
-{id:"IB801",name:"Procesamiento de Imágenes Médicas",cr:3,pr:["IB604"]},
-{id:"IB802",name:"Biomecánica Avanzada",cr:3,pr:["IB504"]},
-{id:"IB803",name:"Gestión de Tecnología en Salud",cr:2},
-{id:"IB804",name:"Proyecto I",cr:3,pr:["IB703","IB701"]},
-{id:"IB805",name:"Electiva III",cr:2}
-]},
-{
-name:"Semestre 9",
-courses:[
-{id:"IB901",name:"Regulación y Normatividad Biomédica",cr:2},
-{id:"IB902",name:"Ingeniería Clínica",cr:3,pr:["IB703"]},
-{id:"IB903",name:"Proyecto II",cr:4,pr:["IB804"]},
-{id:"IB904",name:"Electiva IV",cr:2}
-]},
-{
-name:"Semestre 10",
-courses:[
-{id:"IB1001",name:"Trabajo de Grado",cr:8,pr:["IB903"]},
-{id:"IB1002",name:"Electiva V",cr:2}
-]}
-];
+    let appState = {
+        approved: [],
+        selected: []
+    };
 
-const grid=document.getElementById("grid");
+    function loadState() {
+        const saved = localStorage.getItem('udea_qf_malla_v4_2024');
+        if (saved) {
+            appState = JSON.parse(saved);
+        }
+    }
 
-function isApproved(id){return approved.includes(id);}
+    function saveState() {
+        localStorage.setItem('udea_qf_malla_v4_2024', JSON.stringify(appState));
+        updateProgress();
+    }
 
-function currentCredits(){
-    let sum=0;
-    semesters.forEach(s=>s.courses.forEach(c=>{
-        if(isApproved(c.id)) sum+=c.cr;
-    }));
-    return sum;
-}
+    function resetProgress() {
+        if(confirm("¿Estás seguro de que quieres borrar todo tu progreso?")) {
+            appState = { approved: [], selected: [] };
+            saveState();
+            renderMalla();
+        }
+    }
 
-function canUnlock(c){
-    if(c.pr && !c.pr.every(p=>isApproved(p))) return false;
-    if(c.coreq && !c.coreq.some(q=>isApproved(q))) return false;
-    return true;
-}
+    function isApproved(code) {
+        return appState.approved.includes(code);
+    }
 
-function render(){
-    grid.innerHTML="";
-    let credits=currentCredits();
+    function isSelected(code) {
+        return appState.selected.includes(code);
+    }
 
-    semesters.forEach(s=>{
-        const col=document.createElement("div");
-        col.className="semester";
-        col.innerHTML=`<h2>${s.name}</h2>`;
-
-        s.courses.forEach(c=>{
-            const d=document.createElement("div");
-            const unlocked=canUnlock(c);
-
-            d.className="course";
-            if(c.coreq) d.classList.add("coreq");
-            if(!unlocked && !isApproved(c.id)) d.classList.add("locked");
-            if(isApproved(c.id)) d.classList.add("approved");
-
-            let tip=[];
-            if(c.pr) tip.push("PR: "+c.pr.join(", "));
-            if(c.coreq) tip.push("CO: "+c.coreq.join(", "));
-
-            d.innerHTML=`
-                <div class="code">${c.id}</div>
-                ${c.name}
-                <small>${c.cr} créditos</small>
-                <div class="tooltip">${tip.join(" | ")}</div>
-            `;
-
-            d.onclick=()=>{
-                if(!unlocked && !isApproved(c.id)) return;
-                approved=isApproved(c.id)
-                    ?approved.filter(x=>x!==c.id)
-                    :[...approved,c.id];
-                localStorage.setItem("ib-approved",JSON.stringify(approved));
-                render();
-            };
-
-            col.appendChild(d);
+    function getTotalCredits() {
+        let total = 0;
+        curriculumData.forEach(level => {
+            level.courses.forEach(course => {
+                if (isApproved(course.code)) {
+                    total += course.credits;
+                }
+            });
         });
-        grid.appendChild(col);
-    });
+        return total;
+    }
 
-    document.getElementById("creditsTotal").textContent=
-        `Créditos aprobados: ${credits} / ${TOTAL_CREDITS}`;
+    function findCourse(code) {
+        for (let level of curriculumData) {
+            for (let course of level.courses) {
+                if (course.code === code) return course;
+            }
+        }
+        return null;
+    }
 
-    document.getElementById("progressBar").style.width=
-        Math.min(credits/TOTAL_CREDITS*100,100)+"%";
-}
+    function checkDependencies(course) {
+        const reasons = { pr: [], co: [] };
+        let isBlocked = false;
 
-render();
+        course.pr.forEach(prCode => {
+            if (prCode === "30_CR") {
+                if (getTotalCredits() < 30) {
+                    reasons.pr.push("Tener mínimo 30 créditos aprobados");
+                    isBlocked = true;
+                }
+            } else if (prCode === "149_CR") {
+                if (getTotalCredits() < 149) {
+                    reasons.pr.push("Tener mínimo 149 créditos aprobados");
+                    isBlocked = true;
+                }
+            } else {
+                if (!isApproved(prCode)) {
+                    const prCourse = findCourse(prCode);
+                    const prName = prCourse ? prCourse.name : prCode;
+                    reasons.pr.push(`Aprobar: ${prName}`);
+                    isBlocked = true;
+                }
+            }
+        });
+
+        course.co.forEach(coCode => {
+            if (!isApproved(coCode) && !isSelected(coCode)) {
+                const coCourse = findCourse(coCode);
+                const coName = coCourse ? coCourse.name : coCode;
+                reasons.co.push(`Cursar simultáneamente: ${coName}`);
+                isBlocked = true;
+            }
+        });
+
+        return { isBlocked, reasons };
+    }
+
+    function toggleCourse(code) {
+        const approvedIndex = appState.approved.indexOf(code);
+        const selectedIndex = appState.selected.indexOf(code);
+
+        if (approvedIndex > -1) {
+            appState.approved.splice(approvedIndex, 1);
+            if (selectedIndex > -1) appState.selected.splice(selectedIndex, 1);
+        } else {
+            appState.approved.push(code);
+            if (selectedIndex > -1) appState.selected.splice(selectedIndex, 1);
+        }
+        saveState();
+        renderMalla();
+    }
+
+    function updateProgress() {
+        const totalCredits = 165;
+        const currentCredits = getTotalCredits();
+        const percentage = Math.round((currentCredits / totalCredits) * 100);
+        
+        const bar = document.getElementById('progressBar');
+        const text = document.getElementById('progressText');
+        
+        bar.style.width = `${percentage}%`;
+        text.textContent = `${percentage}% Completado (${currentCredits}/${totalCredits} Créditos)`;
+    }
+
+    function renderMalla() {
+        const container = document.getElementById('mallaGrid');
+        container.innerHTML = '';
+
+        curriculumData.forEach(levelData => {
+            const col = document.createElement('div');
+            col.className = 'semester-column';
+            
+            const header = document.createElement('div');
+            header.className = 'semester-header';
+            header.textContent = `Nivel ${levelData.level}`;
+            col.appendChild(header);
+
+            levelData.courses.forEach(course => {
+                const card = document.createElement('div');
+                card.className = 'course-card';
+                
+                const approved = isApproved(course.code);
+                const { isBlocked, reasons } = checkDependencies(course);
+                const hasCoreq = course.co.length > 0;
+
+                if (approved) {
+                    card.classList.add('approved');
+                } else if (isBlocked) {
+                    card.classList.add('blocked');
+                }
+
+                if (hasCoreq) {
+                    card.classList.add('corequisite-style');
+                }
+
+                const headerDiv = document.createElement('div');
+                headerDiv.className = 'course-header';
+
+                const codeSpan = document.createElement('span');
+                codeSpan.className = 'course-code';
+                codeSpan.textContent = course.code;
+                
+                const nameSpan = document.createElement('span');
+                nameSpan.className = 'course-name';
+                // Emoji exclusivo para materias con correquisitos
+                const emoji = hasCoreq ? " 🌸" : "";
+                nameSpan.textContent = course.name + emoji;
+                
+                const credSpan = document.createElement('span');
+                credSpan.className = 'course-credits';
+                credSpan.textContent = `${course.credits} Créditos`;
+
+                headerDiv.appendChild(codeSpan);
+                headerDiv.appendChild(nameSpan);
+                
+                card.appendChild(headerDiv);
+                card.appendChild(credSpan);
+
+                if (isBlocked) {
+                    const tooltip = document.createElement('span');
+                    tooltip.className = 'tooltip-text';
+                    
+                    let content = '<span class="tooltip-title">⛔ Materia Bloqueada</span>';
+                    
+                    if (reasons.pr.length > 0) {
+                        content += '<div class="tooltip-section"><span class="tooltip-title">📋 Prerrequisitos faltantes:</span>';
+                        reasons.pr.forEach(r => {
+                            content += `<span class="tooltip-item">${r}</span>`;
+                        });
+                        content += '</div>';
+                    }
+                    
+                    if (reasons.co.length > 0) {
+                        content += '<div class="tooltip-section"><span class="tooltip-title">🔄 Correquisitos faltantes:</span>';
+                        reasons.co.forEach(r => {
+                            content += `<span class="tooltip-item">${r}</span>`;
+                        });
+                        content += '</div>';
+                    }
+                    
+                    tooltip.innerHTML = content;
+                    card.appendChild(tooltip);
+                }
+
+                card.onclick = () => {
+                    if (!isBlocked) {
+                        toggleCourse(course.code);
+                    }
+                };
+
+                col.appendChild(card);
+            });
+
+            container.appendChild(col);
+        });
+
+        updateProgress();
+    }
+
+    loadState();
+    renderMalla();
 </script>
+
 </body>
 </html>
-
